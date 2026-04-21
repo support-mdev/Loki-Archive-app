@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Tailwind Text Color Palette</title>
+</head>
+
+<body class="bg-white p-6 space-y-8">
+
+    <script>
+        const colors = [
+            "slate", "gray", "zinc", "neutral", "stone",
+            "red", "orange", "amber", "yellow", "lime",
+            "green", "emerald", "teal", "cyan", "sky",
+            "blue", "indigo", "violet", "purple", "fuchsia",
+            "pink", "rose"
+        ];
+
+        const shades = ["50", "100", "200", "300", "400", "500", "600", "700", "800", "900", "950"];
+
+        document.body.innerHTML += colors.map(color => `
+<div>
+<h2 class="text-xl font-bold mb-2">${color}</h2>
+<div class="grid grid-cols-11 gap-1">
+${shades.map(shade => `
+<div class="h-14 flex items-center justify-center text-xs font-semibold bg-gray-100 text-${color}-${shade}">
+text-${color}-${shade}
+</div>
+`).join("")}
+</div>
+</div>
+`).join("");
+    </script>
+
+</body>
+
+</html>
