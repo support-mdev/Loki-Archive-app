@@ -25,7 +25,7 @@
     </script>
 <link rel="icon" type="image/png" href="{{ asset('images/fc1.png') }}">    <title>Loki Lore</title>
 
-{-- TVA scan animation keyframes -}
+<!-- TVA scan animation -->
 <style> @keyframes scan {0% { transform: translateY(-100%); }100% { transform: translateY(100%); }}
 </style>
 
