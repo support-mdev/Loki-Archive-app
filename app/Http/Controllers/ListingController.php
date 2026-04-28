@@ -46,6 +46,7 @@ class ListingController extends Controller
 
     //Store Listing Data
     public function store(Request $request) {
+        
         $formFields = $request->validate([
             'source' => 'required',
             'title' => 'required',
