@@ -82,12 +82,13 @@
         </div>
 
 
+
         <div class="mb-6">
             <label class="inline-block text-lg mb-2 text-slate-900 dark:text-white">
                 Purchase / Source URL
             </label>
 
-            <input type="text" class="border border-gray-200 rounded p-2 w-full" name="website" value="{{ old('website') }}">
+            <input type="url" class="border border-gray-200 rounded p-2 w-full" name="website" required value="{{ old('website') }}">
 
             @error('website')
             <p class="text-red-500 text-xs mt-1">{{$message}}</p>

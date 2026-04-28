@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreListingRequest;
 use App\Models\Listing;
 use Illuminate\Http\Request;
 
@@ -45,32 +46,22 @@ class ListingController extends Controller
     }
 
     //Store Listing Data
-    public function store(Request $request) {
-        $formFields = $request->validate([
-            'source' => 'required',
-            'title' => 'required',
-            'category' => 'required',
-            'origin' => 'required',
-            'contact' => 'nullable',
-            'website' => 'nullable',
-            'tags' => 'required',
-            'description' => 'required', 
-            'image' => 'nullable|image|max:2048'
-        ]);
+   public function store(StoreListingRequest $request)
+    {
+        $data = $request->validated();
 
         // attach logged-in user
-        $formFields['user_id'] = auth()->id();
+        $data['user_id'] = auth()->id();
 
-        // Image Upload
-        if($request->hasFile('image')){
-            $formFields['image'] =
-            $request->file('image')->store('images','public');
+        // image upload
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('images', 'public');
         }
 
+        Listing::create($data);
 
-        Listing::create($formFields);
-
-        return redirect('/')->with('message', 'Listing created successfully!');
+        return redirect()->route('listings.index')
+            ->with('success', 'Listing created successfully');
     }
 
     //Show Edit Form
@@ -92,7 +83,7 @@ class ListingController extends Controller
             'category' => 'required',
             'origin' => 'required',
             'contact' => 'nullable',
-            'website' => 'nullable',
+            'website' => 'nullable|url',
             'tags' => 'required',
             'description' => 'required', 
             'image' => 'nullable|image|max:2048'

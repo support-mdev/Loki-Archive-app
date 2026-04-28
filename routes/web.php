@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 // });
 
 // All Listings
-Route::get('/', [ListingController::class, 'index']);
+Route::get('/', [ListingController::class, 'index'])->name('listings.index');
 
 //Show create form
 Route::get('/listings/create', [ListingController::class, 'create'])->middleware('auth');
