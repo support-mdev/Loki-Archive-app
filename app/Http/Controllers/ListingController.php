@@ -46,6 +46,7 @@ class ListingController extends Controller
 
     //Store Listing Data
     public function store(Request $request) {
+        
         $formFields = $request->validate([
             'source' => 'required',
             'title' => 'required',
@@ -75,6 +76,11 @@ class ListingController extends Controller
 
     //Show Edit Form
     public function edit(Listing $listing) {
+
+        if ($listing->user_id != auth()->id()) {
+        abort(403, 'Unauthorized Action');
+        }
+
         return view('listings.edit', ['listing' => $listing]);
     }
 
