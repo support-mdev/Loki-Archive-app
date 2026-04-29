@@ -58,11 +58,11 @@ class ListingController extends Controller
             'title' => 'required',
             'category' => 'required',
             'origin' => 'required',
-            'contact' => 'nullable',
-            'website' => 'nullable',
+            'contact' => 'nullable|email',
+            'website' => 'nullable|url',
             'tags' => 'required',
             'description' => 'required', 
-            'image' => 'nullable|images|mimes:jpeg,png,jpg,webp|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
         ]);
 
 
@@ -107,7 +107,7 @@ class ListingController extends Controller
             'website' => 'nullable',
             'tags' => 'required',
             'description' => 'required', 
-            'image' => 'nullable|images|mimes:jpeg,png,jpg,webp|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
         ]);
 
         // Image Upload
