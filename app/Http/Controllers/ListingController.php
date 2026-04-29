@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Listing;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ListingController extends Controller
 {
@@ -18,7 +20,11 @@ class ListingController extends Controller
             "You will never be a god.",
             "Kneel before me.",
             "Glorious purpose awaits.",
-            "I am Loki of Asgard, and I am your rightful king."
+            "I am Loki of Asgard, and I am your rightful king.",
+            "I have been falling… for 30 minutes!",
+            "No one bad is ever truly bad. And no one good is ever truly good.",
+            "We’re not doing Get Help.",
+            "Love is a dagger."
         ];
 
         $randomQuote = $quotes[array_rand($quotes)];
@@ -46,28 +52,29 @@ class ListingController extends Controller
 
     //Store Listing Data
     public function store(Request $request) {
+        
         $formFields = $request->validate([
             'source' => 'required',
             'title' => 'required',
             'category' => 'required',
             'origin' => 'required',
-            'contact' => 'nullable',
-            'website' => 'nullable',
+            'contact' => 'nullable|email',
+            'website' => 'nullable|url',
             'tags' => 'required',
             'description' => 'required', 
-            'image' => 'nullable|image|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
         ]);
 
-        // attach logged-in user
-        $formFields['user_id'] = auth()->id();
 
         // Image Upload
         if($request->hasFile('image')){
-            $formFields['image'] =
-            $request->file('image')->store('images','public');
+            $file = $request->file('image');
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+
+            $formFields['image'] = $file->storeAs('images', $filename, 'local');
         }
 
-
+        $formFields['user_id'] = auth()->id();
         Listing::create($formFields);
 
         return redirect('/')->with('message', 'Listing created successfully!');
@@ -75,6 +82,11 @@ class ListingController extends Controller
 
     //Show Edit Form
     public function edit(Listing $listing) {
+
+        if ($listing->user_id != auth()->id()) {
+        abort(403, 'Unauthorized Action');
+        }
+
         return view('listings.edit', ['listing' => $listing]);
     }
 
@@ -95,13 +107,21 @@ class ListingController extends Controller
             'website' => 'nullable',
             'tags' => 'required',
             'description' => 'required', 
-            'image' => 'nullable|image|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
         ]);
 
         // Image Upload
         if($request->hasFile('image')){
-            $formFields['image'] =
-            $request->file('image')->store('images','public');
+            
+            //Deletes old image
+            if($listing->image){
+                Storage::disk('local')->delete($listing->image);
+            }
+
+            $file = $request->file('image');
+            $filename = Str::uuid() . '.' . $file->getClientOriginalExtension();
+
+            $formFields['image'] = $file->storeAs('images', $filename, 'local');
         }
 
 
