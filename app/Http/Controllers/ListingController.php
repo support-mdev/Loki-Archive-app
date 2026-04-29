@@ -54,14 +54,14 @@ class ListingController extends Controller
     public function store(Request $request) {
         
         $formFields = $request->validate([
-            'source' => 'required',
-            'title' => 'required',
+            'source' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'category' => 'required',
             'origin' => 'required',
             'contact' => 'nullable|email',
             'website' => 'nullable|url',
-            'tags' => 'required',
-            'description' => 'required', 
+            'tags' => 'required|string|max:255',
+            'description' => 'required|string|max:255', 
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
         ]);
 
@@ -99,14 +99,14 @@ class ListingController extends Controller
         }
 
         $formFields = $request->validate([
-            'source' => 'required',
-            'title' => 'required',
+            'source' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'category' => 'required',
             'origin' => 'required',
-            'contact' => 'nullable',
-            'website' => 'nullable',
-            'tags' => 'required',
-            'description' => 'required', 
+            'contact' => 'nullable|email',
+            'website' => 'nullable|url',
+            'tags' => 'required|string|max:255',
+            'description' => 'required|string|max:255', 
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048'
         ]);
 

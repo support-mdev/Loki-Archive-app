@@ -18,9 +18,9 @@ class UserController extends Controller
     //Create New User
     public function store(Request $request) {
         $formFields = $request->validate([
-            'name' => ['required', 'min:3'],
-            'email' => ['required', 'email', Rule::unique('users', 'email')],
-            'password' => ['required', 'confirmed', Password::min(6)]
+            'name' => ['required', 'string', 'min:3', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
+            'password' => ['required', 'confirmed', Password::min(6)->max(255)]
         ]);
 
         //Hash Password
@@ -52,8 +52,8 @@ class UserController extends Controller
     //Authenticate User
     public function authenticate(Request $request) {
         $formFields = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required']
+            'email' => ['required', 'email', 'max:255'],
+            'password' => ['required', 'max:255']
         ]);
 
         if(auth()->attempt($formFields)) {
