@@ -7,12 +7,7 @@
             <!-- Image with TVA scan effect -->
         <div class="relative hidden md:block w-48 mr-6 overflow-hidden rounded-lg">
 
-        <img
-            class="rounded-lg shadow-2xl"
-            src="{{ $listing->image ? asset('storage/' . $listing->image) : asset('images/no-image.png') }}"
-            alt=""
-        >
-
+        <img class="rounded-lg shadow-2xl" src="{{ $listing->image ? url('/image/' . $listing->image) : asset('images/no-image.png') }}" alt="Listing Image">
         <!-- TVA scan overlay -->
         <div class="absolute inset-0 bg-gradient-to-b from-transparent via-yellow-400/30 to-transparent animate-[scan_3s_linear_infinite] pointer-events-none"></div>
 

@@ -3,7 +3,9 @@
 // use Illuminate\Http\Request;
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 // Route::get('/hello', function() {
 //     return response('<h1>Hello World</h1>', 200)
@@ -23,23 +25,15 @@ use Illuminate\Support\Facades\Route;
 // All Listings
 Route::get('/', [ListingController::class, 'index']);
 
-//Show create form
-Route::get('/listings/create', [ListingController::class, 'create'])->middleware('auth');
-
-// Store Listing Data
-Route::post('/listings', [ListingController::class, 'store']);
-
-//Show Edit Form
-Route::get('/listings/{listing}/edit', [ListingController::class, 'edit']);
-
-//Submit Edit Form
-Route::put('/listings/{listing}', [ListingController::class, 'update']);
-
-//Delete 
-Route::delete('/listings/{listing}', [ListingController::class, 'destroy']);
-
-//Manage Listings
-Route::get('/listings/manage', [ListingController::class, 'manage'])->middleware('auth');
+//Modify Data Auth
+Route::middleware('auth')->group(function () {
+    Route::get('/listings/create', [ListingController::class, 'create']);
+    Route::post('/listings', [ListingController::class, 'store']);
+    Route::get('/listings/{listing}/edit', [ListingController::class, 'edit']);
+    Route::put('/listings/{listing}', [ListingController::class, 'update']);
+    Route::delete('/listings/{listing}', [ListingController::class, 'destroy']);
+    Route::get('/listings/manage', [ListingController::class, 'manage']);
+});
 
 // Single Listings
 Route::get('/listings/{listing}', [ListingController::class, 'show']);
@@ -48,7 +42,8 @@ Route::get('/listings/{listing}', [ListingController::class, 'show']);
 Route::get('/register', [UserController::class, 'create']);
 
 //Create New User
-Route::post('/users', [UserController::class, 'store']);
+Route::post('/users', [UserController::class, 'store'])
+    ->middleware('throttle:3,1'); //3 attempts per minute
 
 //Log User Out
 Route::post('/logout', [UserController::class, 'logout']);
@@ -57,4 +52,18 @@ Route::post('/logout', [UserController::class, 'logout']);
 Route::get('/login', [UserController::class, 'login'])->name('login');
 
 //Login User
-Route::post('/login', [UserController::class, 'authenticate']);
+Route::post('/login', [UserController::class, 'authenticate'])
+    ->middleware('throttle:5,1'); //5 attempts per minute
+
+//Images
+Route::get('/image/{path}', function ($path) {
+    if (!Storage::disk('local')->exists($path)) {
+        abort(404);
+    }
+
+    $file = Storage::disk('local')->get($path);
+    $type = Storage::disk('local')->mimeType($path);
+
+    return Response::make($file, 200)->header("Content-Type", $type);
+
+})->where('path', '.*');
