@@ -40,7 +40,8 @@ Route::get('/listings/{listing}', [ListingController::class, 'show']);
 Route::get('/register', [UserController::class, 'create']);
 
 //Create New User
-Route::post('/users', [UserController::class, 'store']);
+Route::post('/users', [UserController::class, 'store'])
+    ->middleware('throttle:3,1'); //3 attempts per minute
 
 //Log User Out
 Route::post('/logout', [UserController::class, 'logout']);
@@ -49,4 +50,5 @@ Route::post('/logout', [UserController::class, 'logout']);
 Route::get('/login', [UserController::class, 'login'])->name('login');
 
 //Login User
-Route::post('/login', [UserController::class, 'authenticate']);
+Route::post('/login', [UserController::class, 'authenticate'])
+    ->middleware('throttle:5,1'); //5 attempts per minute
