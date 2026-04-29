@@ -3,7 +3,9 @@
 // use Illuminate\Http\Request;
 use App\Http\Controllers\ListingController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 // Route::get('/hello', function() {
 //     return response('<h1>Hello World</h1>', 200)
@@ -52,3 +54,16 @@ Route::get('/login', [UserController::class, 'login'])->name('login');
 //Login User
 Route::post('/login', [UserController::class, 'authenticate'])
     ->middleware('throttle:5,1'); //5 attempts per minute
+
+//Images
+Route::get('/image/{path}', function ($path) {
+    if (!Storage::disk('local')->exists($path)) {
+        abort(404);
+    }
+
+    $file = Storage::disk('local')->get($path);
+    $type = Storage::disk('local')->mimeType($path);
+
+    return Response::make($file, 200)->header("Content-Type", $type);
+
+})->where('path', '.*');
