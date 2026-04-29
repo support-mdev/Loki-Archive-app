@@ -29,6 +29,10 @@ class Listing extends Model
         }
 
         if($filters['search'] ?? false) {
+
+            $search = trim($filters['search']);
+            $search = addcslashes($search, '%_');
+
             $query->where(function ($query) use ($filters) {
                 $query->where('title', 'like', '%' . $filters['search'] . '%')
                     ->orWhere('description', 'like', '%' . $filters['search'] . '%')
