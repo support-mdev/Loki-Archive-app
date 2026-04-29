@@ -9,7 +9,18 @@ class Listing extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['source', 'title', 'category', 'origin', 'contact', 'website', 'tags', 'description', 'image', 'user_id'];
+    protected $fillable = [
+        'source', 
+        'title', 
+        'category', 
+        'origin', 
+        'contact', 
+        'website', 
+        'tags', 
+        'description', 
+        'image', 
+        'user_id'
+        ];
 
     public function scopeFilter($query, array $filters)
     {
@@ -18,6 +29,10 @@ class Listing extends Model
         }
 
         if($filters['search'] ?? false) {
+
+            $search = trim($filters['search']);
+            $search = addcslashes($search, '%_');
+
             $query->where(function ($query) use ($filters) {
                 $query->where('title', 'like', '%' . $filters['search'] . '%')
                     ->orWhere('description', 'like', '%' . $filters['search'] . '%')
